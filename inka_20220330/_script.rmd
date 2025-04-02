@@ -1,0 +1,21 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+# Thang Pham
+
+change to the appropriate paths, files
+Using R 4.1.3
+
+```{r}
+TXT_DIR = "../../"
+
+source("read_MQ_tables.R")
+
+source("inka_v1.6.0.R")
+
+source("collect_output_tables.R")
+#source("collect_output_tables_X.R") # when filenames are number
+```
