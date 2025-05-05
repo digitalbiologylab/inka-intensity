@@ -1498,6 +1498,41 @@ opl_fix_colnames <-function ( pp, dtype, lab.defs ){
 # ------------------------------------------------------------------------------------------------------
 #
 
+norm_intensity_pp_read <- function(filename, dtype = NULL, labfile = "labels.txt") {
+
+    if (is.null(dtype)) {
+        dtype <- "Norm.Intensity"
+    }
+
+    raw <- fread(filename, integer64 = "numeric")
+
+    raw$Gene.names <- gsub("\"", "", sub("=", "", raw$Gene.names))
+    colnames(raw) <- sub("Gene.names", "Gene.Names", colnames(raw))
+
+    samples <- grep(dtype, colnames(raw))
+    if (length(samples) == 0) {
+        colnames(raw) <- sub("Norm.Intensity.", paste0(dtype, "."), colnames(raw))
+    }
+
+    if (file.exists(labfile)) {
+        cat("Found label file. Fixing names.\n")
+        labs <- read.delim(labfile, sep = "\t", stringsAsFactors = FALSE, header = FALSE)
+        labs[[ncol(labs)]] <- sub("\\.+$", "", sub("^\\.+", "", make.names(labs[[ncol(labs)]])))
+        colnames(raw) <- norm_intensity_fix_colnames(raw, dtype, labs)
+    }
+
+    cat("Selecting only phosphorylated peptides...")
+    raw <- raw[raw$Phospho..STY. > 0, ]
+    cat(" Ready.\n")
+
+    return(raw)
+}
+
+
+#
+# ------------------------------------------------------------------------------------------------------
+#
+
 norm_intensity_fix_colnames <- function(pp, dtype, lab.defs) {
 
     old.names <- colnames(pp)
