@@ -1498,6 +1498,27 @@ opl_fix_colnames <-function ( pp, dtype, lab.defs ){
 # ------------------------------------------------------------------------------------------------------
 #
 
+norm_intensity_fix_colnames <- function(pp, dtype, lab.defs) {
+
+    old.names <- colnames(pp)
+    last.col <- ncol(lab.defs)
+    new.names <- make.names(lab.defs[, last.col])
+
+    for (i in 1:nrow(lab.defs)) {
+        in.string  <- paste0(dtype, ".", lab.defs[i, 1], "$")
+        out.string <- paste0(dtype, ".", new.names[i])
+        old.names  <- sub(in.string, out.string, old.names)
+    }
+
+    return(old.names)
+}
+
+
+#
+# ------------------------------------------------------------------------------------------------------
+#
+
+			
 
 
 trimComponents <- function(edges) { 
